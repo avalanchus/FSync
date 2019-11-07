@@ -15,12 +15,6 @@ namespace FSyncLib
         private readonly Configuration _configuration;
 
         /// <summary>
-        ///     Секунды (1000 миллисекунд)
-        /// </summary>
-        // ReSharper disable once InconsistentNaming
-        private const int sec = 1000;
-
-        /// <summary>
         ///     Таймер для задания периода сканирования каталога
         /// </summary>
         private Timer _timer;
@@ -51,6 +45,26 @@ namespace FSyncLib
         ///     Период проверки каталога
         /// </summary>
         public int Period;
+
+        /// <summary>
+        ///     Размерность периода проверки каталога
+        /// </summary>
+        public Measure Measure;
+
+        /// <summary>
+        ///     Тип операции
+        /// </summary>
+        public OperationType OperationType;
+
+        /// <summary>
+        ///     Количество новых файлов для копирования
+        /// </summary>
+        public int NumberFilesToCopy;
+
+        /// <summary>
+        ///     Запись в лог
+        /// </summary>
+        public bool WriteToLog;
 
         /// <summary>
         ///     Папка-источник
@@ -124,12 +138,12 @@ namespace FSyncLib
 
                 foreach (var exclusion in Exclusions)
                 {
-                    var sourceJpgFolder = Path.Combine(sourceSubFolder, exclusion);
-                    if (Directory.Exists(sourceJpgFolder))
+                    var sourceFolder = Path.Combine(sourceSubFolder, exclusion);
+                    if (Directory.Exists(sourceFolder))
                     {
                         foreach (var extension in Extensions)
                         {
-                            var sourceFiles = GetFiles(sourceJpgFolder, extension);
+                            var sourceFiles = GetFiles(sourceFolder, extension);
                             if (sourceFiles.Count > 0)
                             {
                                 var destFiles = GetFiles(destSubFolder, extension);
@@ -141,7 +155,14 @@ namespace FSyncLib
                                     if (missingFileName != null)
                                     {
                                         var newFileName = Path.Combine(destSubFolder, missingFileName);
-                                        CreateHardLink(newFileName, missingFile, IntPtr.Zero);
+                                        if (OperationType == OperationType.HardLink)
+                                        {
+                                            CreateHardLink(newFileName, missingFile, IntPtr.Zero);
+                                        }
+                                        else
+                                        {
+                                            File.Copy(missingFile, newFileName, true);
+                                        }
                                     }
                                 }
                             }
@@ -163,11 +184,19 @@ namespace FSyncLib
             TimerCallback timerCallback = state => { SyncFoldersTree(SourceFolder, DestFolder); };
 
             Period = 0;
+            Measure = _configuration.AppSettings.Settings[nameof(Measure)].Value.ToMeasure();
             var period = _configuration.AppSettings.Settings[nameof(Period)].Value;
             Int32.TryParse(period, out Period);
 
+            OperationType = _configuration.AppSettings.Settings[nameof(OperationType)].Value.ToOperationType();
+
+            var numberFilesToCopy = _configuration.AppSettings.Settings[nameof(NumberFilesToCopy)].Value;
+            Int32.TryParse(numberFilesToCopy, out NumberFilesToCopy);
+
+            WriteToLog = Convert.ToBoolean(_configuration.AppSettings.Settings[nameof(WriteToLog)].Value);
+
             // создаем таймер
-            _timer = new Timer(timerCallback, null, 0, Period * sec);
+            _timer = new Timer(timerCallback, null, 0, Period * (int) Measure);
         }
 
         /// <summary>

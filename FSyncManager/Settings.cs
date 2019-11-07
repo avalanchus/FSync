@@ -13,37 +13,64 @@ namespace FSyncManager
 
         public string Exclusions
         {
-            get { return tbxExlusions.Text; }
-            set { tbxExlusions.Text = value; }
+            get => tbxExlusions.Text;
+            set => tbxExlusions.Text = value;
         }
 
         public string Extensions
         {
-            get { return tbxExtensions.Text; }
-            set { tbxExtensions.Text = value; }
+            get => tbxExtensions.Text;
+            set => tbxExtensions.Text = value;
         }
 
         public string Period
         {
-            get { return refreshPeriodNumericUpDown.Value.ToString(CultureInfo.InvariantCulture); }
+            get => nudRefreshPeriod.Value.ToString(CultureInfo.InvariantCulture);
             set
             {
-                int period;
-                Int32.TryParse(value, out period);
-                refreshPeriodNumericUpDown.Value = period;
+                Int32.TryParse(value, out var period);
+                nudRefreshPeriod.Value = period;
             }
+        }
+
+        public string NumberFilesToCopy
+        {
+            get => nudNumberFilesToCopy.Value.ToString(CultureInfo.InvariantCulture);
+            set
+            {
+                Int32.TryParse(value, out var numberFilesToCopy);
+                nudNumberFilesToCopy.Value = numberFilesToCopy;
+            }
+        }
+
+        public Measure Measure
+        {
+            get => Enum.TryParse(cbMeasure.SelectedText, out Measure measure) ? measure : Measure.s;
+            set => cbMeasure.SelectedIndex = cbMeasure.FindStringExact(value.ToString());
+        }
+
+        public OperationType OperationType
+        {
+            get => Enum.TryParse(cbMeasure.SelectedText, out OperationType operationType) ? operationType : OperationType.Copy;
+            set => cbOperationType.SelectedIndex = cbOperationType.FindStringExact(value.ToString());
+        }
+
+        public bool WriteToLog
+        {
+            get => chbWriteToLog.Checked;
+            set => chbWriteToLog.Checked = value
         }
 
         public string SourceFolder
         {
-            get { return tbxSourceFolder.Text; }
-            set { tbxSourceFolder.Text = value; }
+            get => tbxSourceFolder.Text;
+            set => tbxSourceFolder.Text = value;
         }
 
         public string DestFolder
         {
-            get { return tbxDestFolder.Text; }
-            set { tbxDestFolder.Text = value; }
+            get => tbxDestFolder.Text;
+            set => tbxDestFolder.Text = value;
         }
 
         private void btnSourceFolder_Click(object sender, EventArgs e)
@@ -85,6 +112,10 @@ namespace FSyncManager
             isDiffer |= SetConfig(nameof(Exclusions), Exclusions);
             isDiffer |= SetConfig(nameof(Extensions), Extensions);
             isDiffer |= SetConfig(nameof(Period), Period);
+            isDiffer |= SetConfig(nameof(Measure), Measure.ToString());
+            isDiffer |= SetConfig(nameof(OperationType), OperationType.ToString());
+            isDiffer |= SetConfig(nameof(NumberFilesToCopy), NumberFilesToCopy);
+            isDiffer |= SetConfig(nameof(WriteToLog), WriteToLog.ToString());
             isDiffer |= SetConfig(nameof(SourceFolder), SourceFolder);
             isDiffer |= SetConfig(nameof(DestFolder), DestFolder);
             if (isDiffer)
@@ -103,6 +134,10 @@ namespace FSyncManager
             Exclusions = _configuration.AppSettings.Settings[nameof(Exclusions)].Value;
             Extensions = _configuration.AppSettings.Settings[nameof(Extensions)].Value;
             Period = _configuration.AppSettings.Settings[nameof(Period)].Value;
+            Measure = _configuration.AppSettings.Settings[nameof(Measure)].Value.ToMeasure();
+            OperationType = _configuration.AppSettings.Settings[nameof(OperationType)].Value.ToOperationType();
+            NumberFilesToCopy = _configuration.AppSettings.Settings[nameof(NumberFilesToCopy)].Value;
+            WriteToLog = Convert.ToBoolean(_configuration.AppSettings.Settings[nameof(WriteToLog)].Value);
             SourceFolder = _configuration.AppSettings.Settings[nameof(SourceFolder)].Value;
             DestFolder = _configuration.AppSettings.Settings[nameof(DestFolder)].Value;
         }

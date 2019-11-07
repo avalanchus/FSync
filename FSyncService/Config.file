@@ -1,12 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <configuration>
     <appSettings>
-      <!-- Папки с файлами для синхронизации с гугл-диском -->
-      <add key="Exclusions" value="джипег;джипеги;жипег;жипеги;jpg;jpeg" />
+      <!-- Папки с файлами, которые не будут создаваться в папке приёмнике, но файлы из них будут копироваться  -->
+      <add key="Exclusions" value="" />
       <!-- Расширения синхронизируемых файлов -->
-      <add key="Extensions" value="jpg;jpeg" />
-      <!-- В секундах -->
-      <add key="Period" value="120" />
+      <add key="Extensions" value="*" />
+      <!-- Периодичность проверки -->
+      <add key="Period" value="120" /> 
+      <!-- Размерность проверки: s, m, h, d -->
+      <add key="Measure" value="s" />
+      <!-- Тип операции: Copy, HardLink -->
+      <add key="OperationType" value="Copy" />
+      <!-- Количество новых файлов для копирования, если 0 - то все -->
+      <add key="NumberFilesToCopy" value="3" />
+      <!--Запись в лог -->
+      <add key="WriteToLog" value="True" />
       <!-- Папка-источник -->
       <add key="SourceFolder" value="C:\4kill\1" />
       <!-- Папка-приёмник -->
