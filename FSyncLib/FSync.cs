@@ -6,12 +6,18 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
+using NLog;
 
 namespace FSyncLib
 {
 
     public class FSync
     {
+        /// <summary>
+        ///     Nlog
+        /// </summary>
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         private readonly Configuration _configuration;
 
         /// <summary>
@@ -114,7 +120,7 @@ namespace FSyncLib
         public void SyncFoldersTree(string sourcePath, string destPath)
         {
             string slash = "\\";
-            // Считывание из настроек списка папок ислючённых из построение дерева
+            // Считывание из настроек списка папок ислючённых из построения дерева
             Exclusions = _configuration.AppSettings.Settings[nameof(Exclusions)].Value.Split(';').ToList();
             // Считываение из настроек расширений, для которых создаются жёсткие ссылки
             Extensions = _configuration.AppSettings.Settings[nameof(Extensions)].Value.Split(';').ToList();
@@ -127,6 +133,9 @@ namespace FSyncLib
             if (destPath.Substring(destPath.Length - 1) == slash)
                 destPath = destPath.Substring(0, destPath.Length - 1);
             Exclusions.Add(String.Empty);
+            if (WriteToLog)
+                Logger.Info("Start of synchronization...");
+
             foreach (var sourceSubFolder in subFolders)
             {
                 // Относительный путь в папке-источнике
@@ -143,7 +152,17 @@ namespace FSyncLib
                     {
                         foreach (var extension in Extensions)
                         {
-                            var sourceFiles = GetFiles(sourceFolder, extension);
+                            List<string> sourceFiles = GetFiles(sourceFolder, extension);
+                            if (NumberFilesToCopy > 0)
+                            {
+                                // Упорядочиваем по времени и берём NumberFilesToCopy последних
+                                sourceFiles = sourceFiles
+                                    .Select(f => new KeyValuePair<string, DateTime>(f, new FileInfo(f).LastWriteTime))
+                                    .OrderBy(pair => pair.Value)
+                                    .Take(NumberFilesToCopy)
+                                    .Select(pair => pair.Key)
+                                    .ToList();
+                            }
                             if (sourceFiles.Count > 0)
                             {
                                 var destFiles = GetFiles(destSubFolder, extension);
@@ -155,13 +174,26 @@ namespace FSyncLib
                                     if (missingFileName != null)
                                     {
                                         var newFileName = Path.Combine(destSubFolder, missingFileName);
-                                        if (OperationType == OperationType.HardLink)
+                                        try
                                         {
-                                            CreateHardLink(newFileName, missingFile, IntPtr.Zero);
+                                            if (OperationType == OperationType.HardLink)
+                                            {
+                                                CreateHardLink(newFileName, missingFile, IntPtr.Zero);
+                                            }
+                                            else
+                                            {
+                                                File.Copy(missingFile, newFileName, true);
+                                            }
+                                            if (WriteToLog)
+                                                Logger.Info($"{newFileName} - Ok");
                                         }
-                                        else
+                                        catch (Exception e)
                                         {
-                                            File.Copy(missingFile, newFileName, true);
+                                            if (WriteToLog)
+                                            {
+                                                Logger.Info($"{newFileName} - Failure");
+                                            }
+                                            Logger.Error(e);
                                         }
                                     }
                                 }
@@ -170,6 +202,8 @@ namespace FSyncLib
                     }
                 }
             }
+            if (WriteToLog)
+                Logger.Info("End of synchronization");
         }
 
         /// <summary>

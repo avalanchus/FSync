@@ -58,7 +58,7 @@ namespace FSyncManager
         public bool WriteToLog
         {
             get => chbWriteToLog.Checked;
-            set => chbWriteToLog.Checked = value
+            set => chbWriteToLog.Checked = value;
         }
 
         public string SourceFolder

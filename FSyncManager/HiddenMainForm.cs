@@ -73,8 +73,8 @@ namespace FSyncManager
             if (serviceExists)
             {
                 _service.Refresh();
-                installGoogleServiceToolStripMenuItem.Visible = false;
-                unstallGoolgleServiceToolStripMenuItem.Visible = true;
+                installFSyncServiceToolStripMenuItem.Visible = false;
+                unstallFSyncServiceToolStripMenuItem.Visible = true;
 
                 pauseToolStripMenuItem.Visible = _service.Status == ServiceControllerStatus.Running;
                 stopToolStripMenuItem.Visible = _service.Status == ServiceControllerStatus.Running ||
@@ -99,8 +99,8 @@ namespace FSyncManager
             }
             else
             {
-                installGoogleServiceToolStripMenuItem.Visible = true;
-                unstallGoolgleServiceToolStripMenuItem.Visible = false;
+                installFSyncServiceToolStripMenuItem.Visible = true;
+                unstallFSyncServiceToolStripMenuItem.Visible = false;
                 pauseToolStripMenuItem.Visible = false;
                 stopToolStripMenuItem.Visible = false;
                 resumeToolStripMenuItem.Visible = false;
@@ -122,19 +122,19 @@ namespace FSyncManager
                 UseShellExecute = true,
                 CreateNoWindow = true,
                 WorkingDirectory = strPath,
-                Arguments = $"/k {instUtilDir}InstallUtil.exe {key} {Application.StartupPath}\\GooglePhotoSyncService.exe",
+                Arguments = $"/k {instUtilDir}InstallUtil.exe {key} {Application.StartupPath}\\FSyncService.exe",
                 Verb = "runas"
             };
             Process proc = new Process { StartInfo = procInfo };
             proc.Start();
         }
 
-        private void installGoogleServiceToolStripMenuItem_Click(object sender, EventArgs e)
+        private void installFSyncServiceToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ServiceInstallation(1);
         }
 
-        private void unstallGoolgleServiceToolStripMenuItem_Click(object sender, EventArgs e)
+        private void unstallFServiceToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ServiceInstallation(0);
         }
