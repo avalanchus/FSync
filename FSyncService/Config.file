@@ -6,18 +6,20 @@
       <!-- Расширения синхронизируемых файлов -->
       <add key="Extensions" value="*" />
       <!-- Периодичность проверки -->
-      <add key="Period" value="120" /> 
+      <add key="Period" value="60" /> 
       <!-- Размерность проверки: s, m, h, d -->
       <add key="Measure" value="s" />
       <!-- Тип операции: Copy, HardLink -->
       <add key="OperationType" value="Copy" />
       <!-- Количество новых файлов для копирования, если 0 - то все -->
       <add key="NumberFilesToCopy" value="3" />
-      <!--Запись в лог -->
+      <!-- Запись в лог -->
       <add key="WriteToLog" value="True" />
+      <!-- Рекурсивное копирование -->
+      <add key="Recursive" value="False" />
       <!-- Папка-источник -->
-      <add key="SourceFolder" value="C:\4kill\1" />
+      <add key="SourceFolder" value="D:\4kill\1" />
       <!-- Папка-приёмник -->
-      <add key="DestFolder" value="C:\4kill\qwerty" />
+      <add key="DestFolder" value="D:\4kill\qwerty" />
     </appSettings>
 </configuration>

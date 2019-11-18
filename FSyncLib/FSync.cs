@@ -73,6 +73,11 @@ namespace FSyncLib
         public bool WriteToLog;
 
         /// <summary>
+        ///     Рекурсивное копирование
+        /// </summary>
+        public bool Recursive;
+
+        /// <summary>
         ///     Папка-источник
         /// </summary>
         public string SourceFolder;
@@ -120,19 +125,24 @@ namespace FSyncLib
         public void SyncFoldersTree(string sourcePath, string destPath)
         {
             string slash = "\\";
-            // Считывание из настроек списка папок ислючённых из построения дерева
+            // Считывание из настроек списка папок исключённых из построения дерева, файлы из них просто копируются в директорию назначения
             Exclusions = _configuration.AppSettings.Settings[nameof(Exclusions)].Value.Split(';').ToList();
             // Считываение из настроек расширений, для которых создаются жёсткие ссылки
             Extensions = _configuration.AppSettings.Settings[nameof(Extensions)].Value.Split(';').ToList();
 
-            var subFolders =
-                Directory.GetDirectories(sourcePath, "*", SearchOption.AllDirectories)
+
+            var subFolders = Recursive
+                ? Directory.GetDirectories(sourcePath, "*", SearchOption.AllDirectories)
                     .Where(d => !Exclusions.Exists(e => e == Path.GetFileName(d)))
-                    .ToList();
+                    .ToList()
+                : new List<string> {sourcePath};
+            subFolders.Add(sourcePath);
             // Добавляем слеш в конец папки-приёмника, если отсутствует
             if (destPath.Substring(destPath.Length - 1) == slash)
                 destPath = destPath.Substring(0, destPath.Length - 1);
-            Exclusions.Add(String.Empty);
+            if (!Exclusions.Contains(String.Empty))
+                Exclusions.Add(String.Empty);
+            
             if (WriteToLog)
                 Logger.Info("Start of synchronization...");
 
@@ -158,7 +168,7 @@ namespace FSyncLib
                                 // Упорядочиваем по времени и берём NumberFilesToCopy последних
                                 sourceFiles = sourceFiles
                                     .Select(f => new KeyValuePair<string, DateTime>(f, new FileInfo(f).LastWriteTime))
-                                    .OrderBy(pair => pair.Value)
+                                    .OrderByDescending(pair => pair.Value)
                                     .Take(NumberFilesToCopy)
                                     .Select(pair => pair.Key)
                                     .ToList();
@@ -228,6 +238,8 @@ namespace FSyncLib
             Int32.TryParse(numberFilesToCopy, out NumberFilesToCopy);
 
             WriteToLog = Convert.ToBoolean(_configuration.AppSettings.Settings[nameof(WriteToLog)].Value);
+
+            Recursive = Convert.ToBoolean(_configuration.AppSettings.Settings[nameof(Recursive)].Value);
 
             // создаем таймер
             _timer = new Timer(timerCallback, null, 0, Period * (int) Measure);

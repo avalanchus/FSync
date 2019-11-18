@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.pnlMain = new System.Windows.Forms.Panel();
+            this.chbWriteToLog = new System.Windows.Forms.CheckBox();
             this.lblNumberFilesToCopy = new System.Windows.Forms.Label();
             this.nudNumberFilesToCopy = new System.Windows.Forms.NumericUpDown();
             this.lblOperationType = new System.Windows.Forms.Label();
@@ -52,7 +53,7 @@
             this.btnOk = new System.Windows.Forms.Button();
             this.sourceFolderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.destFolderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
-            this.chbWriteToLog = new System.Windows.Forms.CheckBox();
+            this.chbRecursive = new System.Windows.Forms.CheckBox();
             this.pnlMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudNumberFilesToCopy)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudRefreshPeriod)).BeginInit();
@@ -61,6 +62,7 @@
             // 
             // pnlMain
             // 
+            this.pnlMain.Controls.Add(this.chbRecursive);
             this.pnlMain.Controls.Add(this.chbWriteToLog);
             this.pnlMain.Controls.Add(this.lblNumberFilesToCopy);
             this.pnlMain.Controls.Add(this.nudNumberFilesToCopy);
@@ -83,21 +85,31 @@
             this.pnlMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlMain.Location = new System.Drawing.Point(0, 0);
             this.pnlMain.Name = "pnlMain";
-            this.pnlMain.Size = new System.Drawing.Size(706, 361);
+            this.pnlMain.Size = new System.Drawing.Size(773, 361);
             this.pnlMain.TabIndex = 0;
+            // 
+            // chbWriteToLog
+            // 
+            this.chbWriteToLog.AutoSize = true;
+            this.chbWriteToLog.Location = new System.Drawing.Point(528, 158);
+            this.chbWriteToLog.Name = "chbWriteToLog";
+            this.chbWriteToLog.Size = new System.Drawing.Size(80, 17);
+            this.chbWriteToLog.TabIndex = 18;
+            this.chbWriteToLog.Text = "Write to log";
+            this.chbWriteToLog.UseVisualStyleBackColor = true;
             // 
             // lblNumberFilesToCopy
             // 
             this.lblNumberFilesToCopy.AutoSize = true;
-            this.lblNumberFilesToCopy.Location = new System.Drawing.Point(357, 138);
+            this.lblNumberFilesToCopy.Location = new System.Drawing.Point(410, 138);
             this.lblNumberFilesToCopy.Name = "lblNumberFilesToCopy";
-            this.lblNumberFilesToCopy.Size = new System.Drawing.Size(76, 13);
+            this.lblNumberFilesToCopy.Size = new System.Drawing.Size(111, 13);
             this.lblNumberFilesToCopy.TabIndex = 17;
-            this.lblNumberFilesToCopy.Text = "Refresh period";
+            this.lblNumberFilesToCopy.Text = "Number Files To Copy";
             // 
             // nudNumberFilesToCopy
             // 
-            this.nudNumberFilesToCopy.Location = new System.Drawing.Point(360, 155);
+            this.nudNumberFilesToCopy.Location = new System.Drawing.Point(410, 155);
             this.nudNumberFilesToCopy.Maximum = new decimal(new int[] {
             600,
             0,
@@ -106,16 +118,11 @@
             this.nudNumberFilesToCopy.Name = "nudNumberFilesToCopy";
             this.nudNumberFilesToCopy.Size = new System.Drawing.Size(73, 20);
             this.nudNumberFilesToCopy.TabIndex = 16;
-            this.nudNumberFilesToCopy.Value = new decimal(new int[] {
-            120,
-            0,
-            0,
-            0});
             // 
             // lblOperationType
             // 
             this.lblOperationType.AutoSize = true;
-            this.lblOperationType.Location = new System.Drawing.Point(205, 138);
+            this.lblOperationType.Location = new System.Drawing.Point(230, 138);
             this.lblOperationType.Name = "lblOperationType";
             this.lblOperationType.Size = new System.Drawing.Size(76, 13);
             this.lblOperationType.TabIndex = 15;
@@ -128,7 +135,7 @@
             this.cbOperationType.Items.AddRange(new object[] {
             "Copy",
             "HardLink"});
-            this.cbOperationType.Location = new System.Drawing.Point(208, 154);
+            this.cbOperationType.Location = new System.Drawing.Point(230, 154);
             this.cbOperationType.Name = "cbOperationType";
             this.cbOperationType.Size = new System.Drawing.Size(135, 21);
             this.cbOperationType.TabIndex = 14;
@@ -136,7 +143,7 @@
             // lblMeasure
             // 
             this.lblMeasure.AutoSize = true;
-            this.lblMeasure.Location = new System.Drawing.Point(124, 139);
+            this.lblMeasure.Location = new System.Drawing.Point(140, 139);
             this.lblMeasure.Name = "lblMeasure";
             this.lblMeasure.Size = new System.Drawing.Size(48, 13);
             this.lblMeasure.TabIndex = 13;
@@ -151,7 +158,7 @@
             "m",
             "h",
             "d"});
-            this.cbMeasure.Location = new System.Drawing.Point(127, 154);
+            this.cbMeasure.Location = new System.Drawing.Point(140, 154);
             this.cbMeasure.Name = "cbMeasure";
             this.cbMeasure.Size = new System.Drawing.Size(45, 21);
             this.cbMeasure.TabIndex = 12;
@@ -159,7 +166,7 @@
             // btnDestFolder
             // 
             this.btnDestFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDestFolder.Location = new System.Drawing.Point(659, 254);
+            this.btnDestFolder.Location = new System.Drawing.Point(726, 254);
             this.btnDestFolder.Name = "btnDestFolder";
             this.btnDestFolder.Size = new System.Drawing.Size(28, 22);
             this.btnDestFolder.TabIndex = 11;
@@ -172,7 +179,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tbxDestFolder.Location = new System.Drawing.Point(22, 255);
             this.tbxDestFolder.Name = "tbxDestFolder";
-            this.tbxDestFolder.Size = new System.Drawing.Size(637, 20);
+            this.tbxDestFolder.Size = new System.Drawing.Size(704, 20);
             this.tbxDestFolder.TabIndex = 10;
             // 
             // lblDestFolder
@@ -187,7 +194,7 @@
             // btnSourceFolder
             // 
             this.btnSourceFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSourceFolder.Location = new System.Drawing.Point(659, 206);
+            this.btnSourceFolder.Location = new System.Drawing.Point(726, 206);
             this.btnSourceFolder.Name = "btnSourceFolder";
             this.btnSourceFolder.Size = new System.Drawing.Size(28, 22);
             this.btnSourceFolder.TabIndex = 8;
@@ -200,7 +207,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tbxSourceFolder.Location = new System.Drawing.Point(22, 207);
             this.tbxSourceFolder.Name = "tbxSourceFolder";
-            this.tbxSourceFolder.Size = new System.Drawing.Size(637, 20);
+            this.tbxSourceFolder.Size = new System.Drawing.Size(704, 20);
             this.tbxSourceFolder.TabIndex = 7;
             // 
             // lblSourceFolder
@@ -216,7 +223,7 @@
             // 
             this.nudRefreshPeriod.Location = new System.Drawing.Point(22, 155);
             this.nudRefreshPeriod.Maximum = new decimal(new int[] {
-            600,
+            100000,
             0,
             0,
             0});
@@ -232,7 +239,7 @@
             // lblPeriod
             // 
             this.lblPeriod.AutoSize = true;
-            this.lblPeriod.Location = new System.Drawing.Point(19, 139);
+            this.lblPeriod.Location = new System.Drawing.Point(22, 139);
             this.lblPeriod.Name = "lblPeriod";
             this.lblPeriod.Size = new System.Drawing.Size(76, 13);
             this.lblPeriod.TabIndex = 4;
@@ -244,7 +251,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tbxExtensions.Location = new System.Drawing.Point(22, 98);
             this.tbxExtensions.Name = "tbxExtensions";
-            this.tbxExtensions.Size = new System.Drawing.Size(665, 20);
+            this.tbxExtensions.Size = new System.Drawing.Size(732, 20);
             this.tbxExtensions.TabIndex = 3;
             // 
             // lblExtensions
@@ -262,7 +269,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tbxExlusions.Location = new System.Drawing.Point(22, 39);
             this.tbxExlusions.Name = "tbxExlusions";
-            this.tbxExlusions.Size = new System.Drawing.Size(665, 20);
+            this.tbxExlusions.Size = new System.Drawing.Size(732, 20);
             this.tbxExlusions.TabIndex = 1;
             // 
             // lblExlusions
@@ -282,13 +289,13 @@
             this.pnlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.pnlBottom.Location = new System.Drawing.Point(0, 306);
             this.pnlBottom.Name = "pnlBottom";
-            this.pnlBottom.Size = new System.Drawing.Size(706, 55);
+            this.pnlBottom.Size = new System.Drawing.Size(773, 55);
             this.pnlBottom.TabIndex = 1;
             // 
             // btnCancel
             // 
             this.btnCancel.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.btnCancel.Location = new System.Drawing.Point(380, 20);
+            this.btnCancel.Location = new System.Drawing.Point(413, 20);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 1;
@@ -299,7 +306,7 @@
             // btnOk
             // 
             this.btnOk.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.btnOk.Location = new System.Drawing.Point(248, 20);
+            this.btnOk.Location = new System.Drawing.Point(281, 20);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(75, 23);
             this.btnOk.TabIndex = 0;
@@ -310,26 +317,27 @@
             // sourceFolderBrowserDialog
             // 
             this.sourceFolderBrowserDialog.Description = "Source Folder";
+            this.sourceFolderBrowserDialog.HelpRequest += new System.EventHandler(this.sourceFolderBrowserDialog_HelpRequest);
             // 
             // destFolderBrowserDialog
             // 
             this.destFolderBrowserDialog.Description = "Destination Folder";
             // 
-            // chbWriteToLog
+            // chbRecursive
             // 
-            this.chbWriteToLog.AutoSize = true;
-            this.chbWriteToLog.Location = new System.Drawing.Point(460, 158);
-            this.chbWriteToLog.Name = "chbWriteToLog";
-            this.chbWriteToLog.Size = new System.Drawing.Size(80, 17);
-            this.chbWriteToLog.TabIndex = 18;
-            this.chbWriteToLog.Text = "Write to log";
-            this.chbWriteToLog.UseVisualStyleBackColor = true;
+            this.chbRecursive.AutoSize = true;
+            this.chbRecursive.Location = new System.Drawing.Point(626, 158);
+            this.chbRecursive.Name = "chbRecursive";
+            this.chbRecursive.Size = new System.Drawing.Size(74, 17);
+            this.chbRecursive.TabIndex = 19;
+            this.chbRecursive.Text = "Recursive";
+            this.chbRecursive.UseVisualStyleBackColor = true;
             // 
             // Settings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(706, 361);
+            this.ClientSize = new System.Drawing.Size(773, 361);
             this.Controls.Add(this.pnlBottom);
             this.Controls.Add(this.pnlMain);
             this.MaximumSize = new System.Drawing.Size(4000, 400);
@@ -373,5 +381,6 @@
         private System.Windows.Forms.NumericUpDown nudNumberFilesToCopy;
         private System.Windows.Forms.Label lblNumberFilesToCopy;
         private System.Windows.Forms.CheckBox chbWriteToLog;
+        private System.Windows.Forms.CheckBox chbRecursive;
     }
 }

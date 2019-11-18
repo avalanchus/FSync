@@ -61,6 +61,12 @@ namespace FSyncManager
             set => chbWriteToLog.Checked = value;
         }
 
+        public bool Recursive
+        {
+            get => chbRecursive.Checked;
+            set => chbRecursive.Checked = value;
+        }
+
         public string SourceFolder
         {
             get => tbxSourceFolder.Text;
@@ -116,6 +122,7 @@ namespace FSyncManager
             isDiffer |= SetConfig(nameof(OperationType), OperationType.ToString());
             isDiffer |= SetConfig(nameof(NumberFilesToCopy), NumberFilesToCopy);
             isDiffer |= SetConfig(nameof(WriteToLog), WriteToLog.ToString());
+            isDiffer |= SetConfig(nameof(Recursive), Recursive.ToString());
             isDiffer |= SetConfig(nameof(SourceFolder), SourceFolder);
             isDiffer |= SetConfig(nameof(DestFolder), DestFolder);
             if (isDiffer)
@@ -138,8 +145,14 @@ namespace FSyncManager
             OperationType = _configuration.AppSettings.Settings[nameof(OperationType)].Value.ToOperationType();
             NumberFilesToCopy = _configuration.AppSettings.Settings[nameof(NumberFilesToCopy)].Value;
             WriteToLog = Convert.ToBoolean(_configuration.AppSettings.Settings[nameof(WriteToLog)].Value);
+            Recursive = Convert.ToBoolean(_configuration.AppSettings.Settings[nameof(Recursive)].Value);
             SourceFolder = _configuration.AppSettings.Settings[nameof(SourceFolder)].Value;
             DestFolder = _configuration.AppSettings.Settings[nameof(DestFolder)].Value;
+        }
+
+        private void sourceFolderBrowserDialog_HelpRequest(object sender, EventArgs e)
+        {
+
         }
     }
 }
